@@ -1,35 +1,33 @@
-
 buildscript {
-  ext {
-    version_es = "7.14.0"
-  }
-repositories {
-    mavenCentral()
-    jcenter()
-  }
-dependencies {
-    classpath "org.elasticsearch.gradle:build-tools:${version_es}" 
-  }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.elasticsearch.gradle:build-tools:7.12.1'
+    }
 }
-/*
-plugins {
-  id 'java-library'
-  id 'idea'
-  //id 'com.diffplug.spotless' version "5.8.2" apply false
-}
-*/
 
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'elasticsearch.testclusters'
 apply plugin: 'elasticsearch.esplugin'
-//apply plugin: 'elasticsearch.java-rest-test'
-//apply plugin: 'elasticsearch.yaml-rest-test'
 
-repositories {
-  mavenCentral()
-  jcenter()
+eclipse {
+  jdt {
+    sourceCompatibility = 11
+    targetCompatibility = 11
+    javaRuntimeName = "OpenJDK 11.0.1"
+  }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 group = 'org.intrahealth'
-version = '0.0.6-es7.14.0'
+version = '0.0.6-es7.12.1'
 
 esplugin {
     name 'string-similarity-scoring'
@@ -37,17 +35,18 @@ esplugin {
     classname 'org.intrahealth.elasticsearch.plugin.similarity.script.SimilarityScoringPlugin'
     licenseFile=rootProject.file('LICENSE.txt')
     noticeFile=rootProject.file('NOTICE.txt')
-}
 
+}
+//dependencyLicenses=rootProject.file('MITLICENSE.md')
 
 test.enabled = false
 //dependencyLicenses.enabled = false
 //loggerUsageCheck.enabled = false //disable because only works with java 1.8 and below
-//validateNebulaPom.enabled = false
+validateNebulaPom.enabled = false
 
 //integTest.enabled = false
 //testingConventions.enabled = false
 
 dependencies {
-    implementation 'info.debatty:java-string-similarity:1.2.1'
+    compile 'info.debatty:java-string-similarity:1.2.1'
 }
