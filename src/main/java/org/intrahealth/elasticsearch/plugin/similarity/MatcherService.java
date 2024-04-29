@@ -38,6 +38,7 @@ import info.debatty.java.stringsimilarity.interfaces.StringSimilarity;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.text.Normalizer;
 
 /**
  * This class serves as the interface to the string similarity library which provides the string similarity
@@ -86,9 +87,19 @@ public class MatcherService {
      */
     public double matchScore(String matcherName, String left, String right) {
         StringComparisonMatcher matcher = getMatcher(matcherName);
-        return matcher.score(left.trim().toLowerCase(Locale.getDefault()), right.trim().toLowerCase(Locale.getDefault()));
+        String normalizedLeft = removeAccents(left);
+        String normalizedRight = removeAccents(right);
+
+        String cleanedLeft = normalizedLeft.replaceAll("[^a-zA-Z0-9]", "");
+        String cleanedRight = normalizedRight.replaceAll("[^a-zA-Z0-9]", "");
+
+        return matcher.score(cleanedLeft.trim().toLowerCase(Locale.getDefault()), cleanedRight.trim().toLowerCase(Locale.getDefault()));
     }
 
+    private static String removeAccents(String input) {
+        return Normalizer.normalize(input, Normalizer.Form.NFD)
+            .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+    }
     /**
      * Check if the given matcher name is a distance measure.
      *
